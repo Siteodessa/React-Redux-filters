@@ -1,5 +1,4 @@
 const InitialListsState = {
-
 filterTypes : {
   districts: {
     listOpen: false,
@@ -191,17 +190,20 @@ filterTypes : {
     ]
   }
 }
-
 }
 
 
 const select_correct_list = (state, action, name) => {
   state.filterTypes[name].options.map( elem => {
-    elem.id === action.payload.id ? elem.selected = !elem.selected :  elem.selected;
+    if (elem.id === action.payload.id)
+      elem.selected = !elem.selected
   });
   if ( action.payload.id === 0 ) {
     state.filterTypes[name].options.map( elem => {
-      elem.id === action.payload.id ? elem.selected = !elem.selected :  elem.selected = false;
+      if (elem.id === action.payload.id)
+        elem.selected = !elem.selected
+      else
+      elem.selected = false
     });
     state.filterTypes[name].options[0].selected = true
   } else {
@@ -215,16 +217,13 @@ export default function lists(state = InitialListsState, action) {
  if (action.type === 'FETCH_LISTS_SUCCESS') {
     return action.payload;
   }
-
   else if (action.type === 'TOGGLE_LIST') {
     state.filterTypes[action.payload].listOpen = !state.filterTypes[action.payload].listOpen
       return {...state}
   }
-
   else if (action.type === 'TOGGLE_SELECTED_ITEM') {
     state = select_correct_list (state, action, action.payload.key)
       return {...state}
   }
-
   return state;
 }

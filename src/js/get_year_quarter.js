@@ -4,27 +4,25 @@ const get_year_quarter = (month_number) => {
   case '01':
   case '02':
   case '03':
-    return '1 квартал'
-    break;
+    return '1 квартал';
+
   case '04':
   case '05':
   case '06':
     return '2 квартал'
-    break;
+
   case '07':
   case '08':
   case '09':
   return '3 квартал'
-  break;
+
   case '10':
   case '11':
   case '12':
   return '4 квартал'
-  break;
   default:
-    return ''
+    return month_number
 }
-return month_number
 }
 
 

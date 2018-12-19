@@ -1,6 +1,6 @@
 const callApi = async () => { const response = await fetch('/notes');
 const body = await response.json(); if (response.status !== 200) throw Error(body.message);
-console.log(body);
+// console.log(body);
 return body;
 };
 

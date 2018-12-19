@@ -1,0 +1,9 @@
+import './css/bootstrap.min.css';
+import './css/fontawesome-all.css';
+import './css/owl.carousel.css';
+import './css/owl.theme.default.css';
+import './css/animate.css';
+import './css/main_styles.css';
+import './css/responsive.css';
+import './css/swiper.min.css';
+import './css/so.css';

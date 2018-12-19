@@ -1,3 +1,5 @@
+import React from 'react';
+
 const CalendarIcon = () => {
    return (
      <svg version="1.1" id="Capa_1"  viewBox="0 0 58 58">

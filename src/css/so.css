@@ -2530,7 +2530,7 @@ ul.nav.nav-pills li a.active:before {
     -ms-flex-direction: row-reverse;
         flex-direction: row-reverse;
     -ms-flex-align: start;
-        align-items: start;
+        align-items: flex-start;
 }
 .planning_tab ul {
     display: -ms-flexbox;

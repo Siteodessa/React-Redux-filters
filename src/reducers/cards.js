@@ -43,7 +43,7 @@ export default function cards(state = initialState, action) {
     return [...state, action.payload]
 
   } else if (action.type === 'FETCH_CARDS_SUCCESS') {
-        console.log('ADD_CARD state', state);
+        // console.log('ADD_CARD state', state);
     return action.payload;
 
   } else if (action.type === 'DELETE_CARD') {

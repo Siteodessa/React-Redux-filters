@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import App from './App';
 import About from './About';
-import { Router, Route , HashRouter, Link  } from 'react-router-dom';
+import {  Route , HashRouter  } from 'react-router-dom';
 import createHistory from 'history/createBrowserHistory'
 import { syncHistoryWithStore } from 'react-router-redux';
 import Card from './Card'

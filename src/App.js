@@ -1,33 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { getCards } from './actions/getcards';
-import DropdownProto from './components/dropdown/DropdownProto';
-import get_year_quarter from './js/get_year_quarter';
 import convert_quarter_string from './js/convert_quarter_string';
-import cssfiles from './cssfiles.js'
+import './cssfiles.js'
 import LoopHeading from './fields.js'
 import FontAwesome from 'react-fontawesome';
 import './components/dropdown/styles/global.css';
-
-
-
 import PlaceIcon from './css/placeholder.svg';
 import PriceIcon from './css/price-tag.svg';
-
 import ReduceIcon from './css/reduce.svg';
 import CountingIcon from './css/counting.svg';
 import MoneyIcon from './css/MoneyIcon';
 import CalendarIcon from './css/CalendarIcon';
-
-
 const App = ({  cards, filterTypes, onFindCard, onGetCards, onSelectedDistrict, onSelectedPrice, onToggleList, ownProps }) => {
-  let cardInput = ''; let searchInput = ''; let taskInput = ''; let task_descInput = ''; let task_statusInput = '';
+ let searchInput = '';
   const findCard = () => { onFindCard(searchInput.value) }
   const toggleList = (ev, name) =>{ onToggleList(name) }
   const selectedDistrict = (id, key, value) => { onSelectedDistrict(id, key, value) }
   const selectedPrice = (id, key, value) => { onSelectedPrice(id, key, value) }
   let image_Style = (a) => {return { backgroundSize: "cover",display: "block",height: "100%", backgroundImage: "url(/uploads/" +  a  + ")" }}
-
       return (
       <div className="Cards">
         <div className="fields" >
@@ -127,11 +118,12 @@ const App = ({  cards, filterTypes, onFindCard, onGetCards, onSelectedDistrict, 
                   <a href="/doma/zhknagagarinskomplato">
                     <h4>{card.title}</h4>
                     <p> {card.address}</p>
+                    <p> {card.prices}</p>
                     <span>
-                    <span class="svg_price">
+                    <span className="svg_price">
                      <MoneyIcon /></span>
                      <span className="bold">от {card.prices_start_at_per_meter}  у.е./м<sup>2</sup></span></span>
-                    <span><span class="svg_calendar"><CalendarIcon /> </span>{convert_quarter_string(card.house_deploy_date)}</span>
+                    <span><span className="svg_calendar"><CalendarIcon /> </span>{convert_quarter_string(card.house_deploy_date)}</span>
                     Узнать подробнее <i className="fa fa-arrow-right"></i>
                   </a>
                 </div>
@@ -147,63 +139,109 @@ const App = ({  cards, filterTypes, onFindCard, onGetCards, onSelectedDistrict, 
       </div>
     )
 }
-function districtsFilter(state, card) {
-  let chosen = []
-  state.lists.filterTypes.districts.options.map( i => { i.selected !== false ?  typeof i.value === 'string' ? chosen.push(i.value) : chosen = i.value : i.value })
-  let bool = chosen.includes(card.block)
-return bool
-}
-function priceFilter(state, card) {
-  let chosen = []
-  state.lists.filterTypes.prices.options.map( i => { i.selected !== false ?  typeof i.value === 'string' ? chosen.push(i.value) : chosen = i.value : i.value })
-  let bool = Number(JSON.parse(card.prices)[1].text) < chosen[1]
-return bool
-}
-function spaceFilter(state, card) {
-  let chosen = []
-  state.lists.filterTypes.spaces.options.map( i => {
-    i.selected !== false ? typeof i.value === 'string' ? chosen.push(i.value) : chosen.push(i.value) : i.value
-  })
-  let bool = false
-  let prices = JSON.parse(card.prices)
-  let spaces = [ Number(prices[0].text),
-                 Number(prices[2].text),
-                 Number(prices[4].text) ]
-  chosen.map( e => {
-    if (e[0] < spaces[0] && spaces[0] < e[1] ||
-        e[0] < spaces[1] && spaces[1] < e[1] ||
-        e[0] < spaces[2] && spaces[2] < e[1] ) bool = true
-   if (isNaN(spaces[0]) && isNaN(spaces[0]) && isNaN(spaces[0])) bool = true
-  });
-return bool
-}
-function undef_or_NaN(el) {
-  if (isNaN(Number(el)) && typeof el === 'undefined' ) {
+
+
+const undef_or_NaN = (el) => {
+  if (el === 'NaN')   return true
+  if (isNaN((el)) && typeof el === 'undefined' ) {
     return true
   } return false
 }
-function roomFilter(state, card) {
+
+const correct_choice = (chosen = [], i) => {
+  if (i.selected !== false)
+  if (typeof i.value === 'string')
+    chosen.push(i.value)
+  else
+    chosen = i.value
+    return chosen
+}
+
+const districtsFilter = (state, card) => {
+  let chosen;
+  chosen = []
+  state.lists.filterTypes.districts.options.forEach( i => {
+    if (i.selected !== false)
+    if (typeof i.value === 'string')
+  {    chosen.push(i.value) }
+    else
+    {  chosen = i.value; }
+  })
+  return Boolean(chosen.includes(card.block))
+}
+
+const priceFilter = (state, card) => {
+  let chosen = []
+  state.lists.filterTypes.prices.options.map( i => {
+  chosen = correct_choice(chosen, i)
+  })
+  let bool = Number(JSON.parse(card.prices)[1].text) < chosen[1]
+  return bool
+}
+
+const correctNumber = (incorrectNum) => {
+  if (!undef_or_NaN(incorrectNum))
+return Number(incorrectNum.replace(',', '.'))
+else
+return incorrectNum
+}
+
+const spaceFilter = (state, card) => {
+  let chosen = []
+  state.lists.filterTypes.spaces.options.map( i => {
+      if (i.selected !== false) {
+      chosen.push(i.value)
+      }
+  })
+  let bool = false
+  let prices = JSON.parse(card.prices)
+  let spaces = [ correctNumber(prices[0].text),
+                 correctNumber(prices[2].text),
+                 correctNumber(prices[4].text) ]
+                 if (chosen.length === 1){
+
+           if (chosen[0][0] < spaces[0] && spaces[0] < chosen[0][1] ) bool = true
+           if (chosen[0][0] < spaces[1] && spaces[1] < chosen[0][1] ) bool = true
+           if (chosen[0][0] < spaces[2] && spaces[2] < chosen[0][1] ) bool = true
+           if (undef_or_NaN(spaces[0]) || undef_or_NaN(spaces[1]) || undef_or_NaN(spaces[2])) bool = true
+            if (!bool) {
+              console.log(chosen[0][0] ,'<', spaces[0] ,'&&', spaces[0] ,'<', chosen[1]);
+
+            }
+         } else {
+           chosen.map( e => {
+             if (e[0] < spaces[0] && spaces[0] < e[1] ) bool = true
+             if (e[0] < spaces[1] && spaces[1] < e[1] ) bool = true
+             if (e[0] < spaces[2] && spaces[2] < e[1] ) bool = true
+             if (undef_or_NaN(spaces[0]) || undef_or_NaN(spaces[1]) || undef_or_NaN(spaces[2])) bool = true
+           })
+         }
+return bool
+}
+
+const roomFilter = (state, card) => {
   let chosen = []
   let availability = {}
     let prices = JSON.parse(card.prices)
   state.lists.filterTypes.rooms.options.map( i => {
-    i.selected !== false ? i.value.length < 2 ? chosen.push(i.value) : chosen = i.value : i.value
+    if (i.selected !== false)
+    if(i.value.length < 2)
+      chosen.push(i.value)
+    else
+    chosen = i.value
   });
-  (!undef_or_NaN(prices[0].text) || !undef_or_NaN(prices[1].text)) ?  availability[0] = true : availability[0] = false;
-  (!undef_or_NaN(prices[2].text) || !undef_or_NaN(prices[3].text)) ?  availability[1] = true : availability[1] = false;
-  (!undef_or_NaN(prices[4].text) || !undef_or_NaN(prices[5].text)) ?  availability[2] = true : availability[2] = false;
+  (isNaN(correctNumber(prices[0].text)) || isNaN(correctNumber(prices[1].text))) ?  availability[0] = false : availability[0] = true;
+  (isNaN(correctNumber(prices[2].text)) || isNaN(correctNumber(prices[3].text))) ?  availability[1] = false : availability[1] = true;
+  (isNaN(correctNumber(prices[4].text)) || isNaN(correctNumber(prices[5].text))) ?  availability[2] = false : availability[2] = true;
 let bool = false
 for (let prop in chosen) {
   if (availability[chosen[prop] - 1] === true) bool = true
   }
+  if (!bool) {
+    console.log(card.title, availability);
+  }
 return bool
 }
-
-
-
-
-
-
 
 
 export default connect(
@@ -211,11 +249,11 @@ export default connect(
     cards: state.cards
       .filter(
         card => card.note_type === 'Объект' &&
-        card.title.toLowerCase().includes(state.filterCards.toLowerCase()) &&
-        districtsFilter(state, card) &&
-        priceFilter(state, card) &&
-        spaceFilter(state, card) &&
-        roomFilter(state, card)
+        card.title.toLowerCase().includes(state.filterCards.toLowerCase())
+        && districtsFilter(state, card)
+        && priceFilter(state, card)
+        && spaceFilter(state, card)
+        && roomFilter(state, card)
       ),
   filterTypes: state.lists.filterTypes,
   ownProps

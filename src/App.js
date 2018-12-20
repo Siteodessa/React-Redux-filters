@@ -12,12 +12,21 @@ import ReduceIcon from './css/reduce.svg';
 import CountingIcon from './css/counting.svg';
 import MoneyIcon from './css/MoneyIcon';
 import CalendarIcon from './css/CalendarIcon';
-const App = ({  cards, filterTypes, onFindCard, onGetCards, onSelectedDistrict, onSelectedPrice, onToggleList, ownProps }) => {
+
+import SingleDropdown from './SingleDropdown'
+import SingleDropdownMobile from './SingleDropdownMobile'
+
+
+
+const App = ({  cards, filterTypes, onFindCard, onGetCards, onToggleMobile, onSelectedDistrict, onSelectedPrice, onToggleList, ownProps }) => {
  let searchInput = '';
+ const mobileOpen = false;
   const findCard = () => { onFindCard(searchInput.value) }
   const toggleList = (ev, name) =>{ onToggleList(name) }
+  const toggleMobile = (ev, name) =>{ onToggleMobile(name) }
   const selectedDistrict = (id, key, value) => { onSelectedDistrict(id, key, value) }
   const selectedPrice = (id, key, value) => { onSelectedPrice(id, key, value) }
+
   let image_Style = (a) => {return { backgroundSize: "cover",display: "block",height: "100%", backgroundImage: "url(/uploads/" +  a  + ")" }}
       return (
       <div className="Cards">
@@ -28,72 +37,11 @@ const App = ({  cards, filterTypes, onFindCard, onGetCards, onSelectedDistrict, 
                   <input type="text" onChange={findCard} ref={(input) => { searchInput = input}} />
                   <button onClick={findCard}> <img alt="search" src="/brief/magnifying-glass.svg" /> </button>
                 </div>
-              <div className="dropdown_menu">
-              <div className="dd-wrapper">
-                <div className="dd-header" onClick={(ev) => toggleList(ev, filterTypes.districts.options[0].key)}>
-                  <div className="dd-header-title">{filterTypes.districts.headerTitle}</div>
-                  {filterTypes.districts.listOpen
-                    ? <FontAwesome name="angle-up"/>
-                    : <FontAwesome name="angle-down"/>
-                  }
-                  <span className="gray_icon"><img alt="search" src={PlaceIcon} /></span>
-                </div>
-                {filterTypes.districts.listOpen && <ul className="dd-list">
-                   {filterTypes.districts.options.map((item) => (
-                     <li className="dd-list-item" key={item.title} onClick={() => selectedDistrict(item.id, item.key, item.value)}>
-                       {item.title} {item.selected && <FontAwesome name="check"/>}
-                     </li>
-                    ))}
-                </ul>}
-              </div>
-              <div className="dd-wrapper">
-                <div className="dd-header" onClick={(ev) => toggleList(ev, filterTypes.prices.options[0].key)}>
-                  <div className="dd-header-title">{filterTypes.prices.headerTitle}</div>
-                  {filterTypes.prices.listOpen
-                    ? <FontAwesome name="angle-up"/>
-                    : <FontAwesome name="angle-down"/>
-                  }<span className="gray_icon"><img alt="search" src={PriceIcon} /></span>
-                </div>
-                {filterTypes.prices.listOpen && <ul className="dd-list">
-                   {filterTypes.prices.options.map((item) => (
-                     <li className="dd-list-item" key={item.title} onClick={() => selectedPrice(item.id, item.key, item.value)}>
-                       {item.title} {item.selected && <FontAwesome name="check"/>}
-                     </li>
-                    ))}
-                </ul>}
-              </div>
-              <div className="dd-wrapper">
-                <div className="dd-header" onClick={(ev) => toggleList(ev, filterTypes.spaces.options[0].key)}>
-                  <div className="dd-header-title">{filterTypes.spaces.headerTitle}</div>
-                  {filterTypes.spaces.listOpen
-                    ? <FontAwesome name="angle-up"/>
-                    : <FontAwesome name="angle-down"/>
-                  }<span className="gray_icon"><img alt="search" src={ReduceIcon} /></span>
-                </div>
-                {filterTypes.spaces.listOpen && <ul className="dd-list">
-                   {filterTypes.spaces.options.map((item) => (
-                     <li className="dd-list-item" key={item.title} onClick={() => selectedDistrict(item.id, item.key, item.value)}>
-                       {item.title} {item.selected && <FontAwesome name="check"/>}
-                     </li>
-                    ))}
-                </ul>}
-              </div>
-              <div className="dd-wrapper">
-                <div className="dd-header" onClick={(ev) => toggleList(ev, filterTypes.rooms.options[0].key)}>
-                  <div className="dd-header-title">{filterTypes.rooms.headerTitle}</div>
-                  {filterTypes.rooms.listOpen
-                    ? <FontAwesome name="angle-up"/>
-                    : <FontAwesome name="angle-down"/>
-                  }<span className="gray_icon"><img alt="search" src={CountingIcon} /></span>
-                </div>
-                {filterTypes.rooms.listOpen && <ul className="dd-list">
-                   {filterTypes.rooms.options.map((item) => (
-                     <li className="dd-list-item" key={item.title} onClick={() => selectedDistrict(item.id, item.key, item.value)}>
-                       {item.title} {item.selected && <FontAwesome name="check"/>}
-                     </li>
-                    ))}
-                </ul>}
-              </div>
+              <div className="dropdown_menu onlydesk">
+                <SingleDropdown filterTypes={filterTypes} Icon={PlaceIcon} toggleList={toggleList} selectedOption={selectedDistrict} field={"districts"} />
+                <SingleDropdown filterTypes={filterTypes} Icon={PriceIcon} toggleList={toggleList} selectedOption={selectedPrice}    field={"prices"} />
+                <SingleDropdown filterTypes={filterTypes} Icon={ReduceIcon} toggleList={toggleList} selectedOption={selectedDistrict} field={"spaces"} />
+                <SingleDropdown filterTypes={filterTypes} Icon={CountingIcon} toggleList={toggleList} selectedOption={selectedDistrict} field={"rooms"} />
               </div>
               <div className="dropdown_proto">
                 {/* <DropdownProto /> */}
@@ -103,10 +51,31 @@ const App = ({  cards, filterTypes, onFindCard, onGetCards, onSelectedDistrict, 
         </div>
         <LoopHeading />
         <div className="container">
+
+          <div className="mobile_filters onlymob"><button className={filterTypes.toggleMobile ? 'toggled btn' : 'untoggled btn'} onClick={(ev) => toggleMobile(ev, filterTypes.mobileOpen)} >Фильтры<FontAwesome name="filter"/></button></div>
+          <div className={filterTypes.toggleMobile ? 'dropdown_menu onlymob opened' : 'dropdown_menu onlymob closed'} >
+            <button className="close" onClick={(ev) => toggleMobile(ev, filterTypes.mobileOpen)}><FontAwesome name="times"/></button>
+          <div className="dropdown_bearer">
+            <div className="col-lg-12 col-xs-12 flex cardsearch">
+              <input type="text" placeholder="Поиск" onChange={findCard} ref={(input) => { searchInput = input}} />
+              <button onClick={findCard}><img alt="search" src="/brief/magnifying-glass.svg" /> </button>
+            </div>
+
+            <div className="mobile_filter">  <SingleDropdownMobile filterTypes={filterTypes} Icon={PlaceIcon} toggleList={toggleList} selectedOption={selectedDistrict} field={"districts"} />    </div>
+            <div className="mobile_filter">  <SingleDropdownMobile filterTypes={filterTypes} Icon={PriceIcon} toggleList={toggleList} selectedOption={selectedPrice}    field={"prices"} />    </div>
+            <div className="mobile_filter">  <SingleDropdownMobile filterTypes={filterTypes} Icon={ReduceIcon} toggleList={toggleList} selectedOption={selectedDistrict} field={"spaces"} />    </div>
+            <div className="mobile_filter">  <SingleDropdownMobile filterTypes={filterTypes} Icon={CountingIcon} toggleList={toggleList} selectedOption={selectedDistrict} field={"rooms"} />    </div>
+
+            <button className="search">Поиск</button>
+
+
+          </div>
+          </div>
+
         <div className="row">
           {
           cards.map((card, index) =>
-            <div key={index}  className="col-md-3 col-sm-6">
+            <div key={index} className="col-md-3 col-sm-6">
               <div>
               <div className="el_card">
                 <div className="image_c">
@@ -118,7 +87,6 @@ const App = ({  cards, filterTypes, onFindCard, onGetCards, onSelectedDistrict, 
                   <a href="/doma/zhknagagarinskomplato">
                     <h4>{card.title}</h4>
                     <p> {card.address}</p>
-                    <p> {card.prices}</p>
                     <span>
                     <span className="svg_price">
                      <MoneyIcon /></span>
@@ -243,7 +211,6 @@ for (let prop in chosen) {
 return bool
 }
 
-
 export default connect(
   (state, ownProps) => ({
     cards: state.cards
@@ -267,6 +234,9 @@ export default connect(
     },
     onToggleList : (payload) => {
       dispatch({ type: 'TOGGLE_LIST', payload: payload})
+    },
+    onToggleMobile : (name) => {
+      dispatch({ type: 'TOGGLE_MOBILE', payload: name})
     },
     onSelectedDistrict : (id, key, value) => {
       dispatch({ type: 'TOGGLE_SELECTED_ITEM', payload: {id:id, key:key}})

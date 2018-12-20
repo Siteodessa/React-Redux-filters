@@ -2,6 +2,7 @@ const InitialListsState = {
 filterTypes : {
   districts: {
     listOpen: false,
+    mobileOpen: false,
     headerTitle: 'Район',
     titleHelper: 'район',
     options: [
@@ -219,6 +220,10 @@ export default function lists(state = InitialListsState, action) {
   }
   else if (action.type === 'TOGGLE_LIST') {
     state.filterTypes[action.payload].listOpen = !state.filterTypes[action.payload].listOpen
+      return {...state}
+  }
+  else if (action.type === 'TOGGLE_MOBILE') {
+    state.filterTypes.toggleMobile = !state.filterTypes.toggleMobile
       return {...state}
   }
   else if (action.type === 'TOGGLE_SELECTED_ITEM') {

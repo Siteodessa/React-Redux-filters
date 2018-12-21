@@ -37,4 +37,4 @@ ReactDOM.render(
       setTimeout(function(){
         document.querySelectorAll('.Cards')[0].classList += ' loaded'
       }, 1500 )
-registerServiceWorker();
+// registerServiceWorker();

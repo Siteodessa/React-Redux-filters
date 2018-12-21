@@ -5,8 +5,7 @@ class App extends Component {
     return (
       <div className="row">
         <h2 className="text-black text-center section_title loop_title ">
-          Все жилые комплексы
-          <span className="bold">«СК БУДОВА»</span>
+          Все жилые комплексы <span className="bold">«СК БУДОВА»</span>
         </h2>
       </div>
     );

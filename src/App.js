@@ -42,6 +42,7 @@ const App = ({  cards, filterTypes, onFindCard, onGetCards, onToggleMobile, onSe
                 <SingleDropdown filterTypes={filterTypes} Icon={PriceIcon} toggleList={toggleList} selectedOption={selectedPrice}    field={"prices"} />
                 <SingleDropdown filterTypes={filterTypes} Icon={ReduceIcon} toggleList={toggleList} selectedOption={selectedDistrict} field={"spaces"} />
                 <SingleDropdown filterTypes={filterTypes} Icon={CountingIcon} toggleList={toggleList} selectedOption={selectedDistrict} field={"rooms"} />
+                <button className="desktop search"><span>Поиск</span><img alt="search" src='/brief/magnifying-glass.svg' /></button>
               </div>
               <div className="dropdown_proto">
                 {/* <DropdownProto /> */}

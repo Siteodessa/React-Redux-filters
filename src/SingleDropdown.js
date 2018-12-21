@@ -19,7 +19,7 @@ class SingleDropdown extends React.Component {
             ? <FontAwesome name="angle-up"/>
             : <FontAwesome name="angle-down"/>
           }
-          <span className="gray_icon"><img alt="search" src={PlaceIcon} /></span>
+          <span className="gray_icon"><img alt="search" src={this.props.Icon} /></span>
         </div>
         {this.props.filterTypes[this.props.field].listOpen && <ul className="dd-list">
            {this.props.filterTypes[this.props.field].options.map((item) => (

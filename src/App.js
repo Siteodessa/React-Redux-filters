@@ -18,10 +18,12 @@ import SingleDropdownMobile from './SingleDropdownMobile'
 
 
 
-const App = ({  cards, filterTypes, onFindCard, onGetCards, onToggleMobile, onSelectedDistrict, onSelectedPrice, onToggleList, ownProps }) => {
- let searchInput = '';
- const mobileOpen = false;
+const App = ({  cards, filterTypes, onFindCard , onMobileFindCard, onGetCards, onToggleMobile, onSelectedDistrict, onSelectedPrice, onToggleList, ownProps }) => {
+  let searchInput = '';
+  let mobilesearchInput = '';
+  const mobileOpen = false;
   const findCard = () => { onFindCard(searchInput.value) }
+  const mobilefindCard = () => { onMobileFindCard(mobilesearchInput.value) }
   const toggleList = (ev, name) =>{ onToggleList(name) }
   const toggleMobile = (ev, name) =>{ onToggleMobile(name) }
   const selectedDistrict = (id, key, value) => { onSelectedDistrict(id, key, value) }
@@ -58,8 +60,8 @@ const App = ({  cards, filterTypes, onFindCard, onGetCards, onToggleMobile, onSe
             <button className="close" onClick={(ev) => toggleMobile(ev, filterTypes.mobileOpen)}><FontAwesome name="times"/></button>
           <div className="dropdown_bearer">
             <div className="col-lg-12 col-xs-12 flex cardsearch">
-              <input type="text" placeholder="Поиск" onChange={findCard} ref={(input) => { searchInput = input}} />
-              <button onClick={findCard}><img alt="search" src="/brief/magnifying-glass.svg" /> </button>
+              <input type="text" placeholder="Поиск" onChange={mobilefindCard} ref={(input) => { mobilesearchInput = input}} />
+              <button onClick={mobilefindCard}><img alt="search" src="/brief/magnifying-glass.svg" /> </button>
             </div>
 
             <div className="mobile_filter">  <SingleDropdownMobile filterTypes={filterTypes} Icon={PlaceIcon} toggleList={toggleList} selectedOption={selectedDistrict} field={"districts"} />    </div>
@@ -228,6 +230,9 @@ export default connect(
   }),
   dispatch => ({
     onFindCard : (task) => {
+      dispatch({ type: 'FIND_CARD', payload: task})
+    },
+    onMobileFindCard : (task) => {
       dispatch({ type: 'FIND_CARD', payload: task})
     },
     onGetCards: () => {
